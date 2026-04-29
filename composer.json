@@ -1,6 +1,6 @@
 {
     "name": "raymondoor/migrr",
-    "description": "Tool to construct sql queries",
+    "description": "Migration tool and sql query builder.",
     "type": "library",
     "license": "MIT",
     "autoload": {
