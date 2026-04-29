@@ -1,0 +1,12 @@
+{
+    "name": "raymondoor/migrr",
+    "description": "Tool to construct sql queries",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Raymondoor\\Migrr\\": "src/"
+        }
+    },
+    "require": {}
+}
