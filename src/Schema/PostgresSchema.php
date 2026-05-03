@@ -5,7 +5,7 @@ class PostgresSchema extends Schema{
         parent::__construct();
         $this->driver = 'pgsql';
     }
-    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):Schema{
+    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):PostgresSchema{
         if(empty($this->query)){
             $this->query.='CREATE ';
             if($temp){
@@ -24,7 +24,7 @@ class PostgresSchema extends Schema{
         }
         return $this;
     }
-    public function alter_table(string $table):Schema{
+    public function alter_table(string $table):PostgresSchema{
         if(empty($this->query)){
             $this->query.=$table;
         }else{
