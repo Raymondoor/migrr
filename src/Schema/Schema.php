@@ -1,43 +1,24 @@
 <?php namespace Raymondoor\Migrr\Schema;
+use Raymondoor\Migrr\Schema\ColumnName\PostgresColumnName;
 
-class Schema{
+abstract class Schema{
     public string $query = "";
     public string $driver = "";
     public function __construct(){}
-    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""){
-        if(empty($this->query)){
-            $this->query.='CREATE ';
-            if($temp){
-                $this->query.='TEMPORARY ';
-            }
-            if(!empty($optionsRaw)){
-                $this->query.= $optionsRaw.' ';
-            }
-            $this->query.= 'TABLE ';
-            if($ifNotExist){
-                $this->query.= 'IF NOT EXISTS ';
-            }
-            $this->query.= $name.' ';
-        }else{
-            throw new \Exception('Cannot run '.__FUNCTION__.', should be ran first.');
-        }
-        return $this;
-    }
-    public function alter_table(string $table){
-        if(empty($this->query)){
-            $this->query.=$table;
-        }else{
-            throw new \Exception('Cannot run '.__FUNCTION__.', should be ran first.');
-        }
-        return $this;
-    }
+    abstract public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):Schema;
+    abstract public function alter_table(string $table):Schema;
     public function raw(string $sql){
         $this->query .= $sql.' ';
         return $this;
     }
-    public function columns():ColumnName\ColumnName{
+    public function columns(){
         $this->query .= '(';
-        return new ColumnName\ColumnName($this);
+        return match($this->driver){
+            'pgsql' => new PostgresColumnName($this),
+            'mysql' => new MySqlColumnName($this),
+            'sqlite' => new SqliteColumnName($this),
+            default => throw new \Exception("Unknown driver: $this->driver")
+        };
     }
     public function end(){
         $this->query = trim($this->query);

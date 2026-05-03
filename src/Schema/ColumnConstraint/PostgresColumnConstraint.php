@@ -1,27 +1,27 @@
 <?php namespace Raymondoor\Migrr\Schema\ColumnConstraint;
 use Raymondoor\Migrr\Schema\ColumnName\ColumnName;
-use Raymondoor\Migrr\Schema\DataType\DataType;
+use Raymondoor\Migrr\Schema\ColumnName\PostgresColumnName;
+use Raymondoor\Migrr\Schema\DataType\PostgresDataType;
+use Raymondoor\Migrr\Schema\PostgresSchema;
 use Raymondoor\Migrr\Schema\Schema;
-abstract class ColumnConstraint{
+class PostgresColumnConstraint extends ColumnConstraint{
     public Schema $schema;
     public string $columnDef;
     public function __construct(Schema $schema, string $columnDef){
         $this->columnDef = $columnDef;
         $this->schema = $schema;
     }
-    public function next(){
-        $this->columnDef = trim($this->columnDef);
-        $this->columnDef .=', ';
-        $this->schema->query .= $this->columnDef;
-    }
-    public function nextColumn():ColumnName{
+    public function nextColumn():PostgresColumnName{
         return $this->makeColumnName();
     }
-    public function nextColumnName(string $columnName):DataType{
+    public function nextColumnName(string $columnName):PostgresDataType{
         return $this->makeColumnName()->name($columnName);
     }
-    abstract protected function makeColumnName():ColumnName;
-    public function endColumns():Schema{
+    function makeColumnName():PostgresColumnName{
+        $this->next();
+        return new PostgresColumnName($this->schema);
+    }
+    public function endColumns():PostgresSchema{
         $this->schema->query .= trim($this->columnDef);
         $this->schema->query .= ') ';
         return $this->schema;
@@ -36,6 +36,10 @@ abstract class ColumnConstraint{
     }
     public function primaryKey(){
         $this->columnDef .='PRIMARY KEY ';
+        return $this;
+    }
+    public function identity(){
+        $this->columnDef .='GENERATED ALWAYS AS IDENTITY ';
         return $this;
     }
     public function check(string $condition){

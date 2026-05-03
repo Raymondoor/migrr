@@ -1,7 +1,8 @@
 <?php namespace Raymondoor\Migrr\Schema\ColumnName;
+use Raymondoor\Migrr\Schema\ColumnConstraint\ColumnConstraint;
 use Raymondoor\Migrr\Schema\DataType\DataType;
 use Raymondoor\Migrr\Schema\Schema;
-class ColumnName{
+abstract class ColumnName{
     public array $unavailables = [
         'order',
     ];
@@ -10,8 +11,7 @@ class ColumnName{
     public function __construct(Schema $schema){
         $this->schema = $schema;
     }
-    public function name(string $columnName){
-        $this->columnDef .= $columnName.' ';
-        return new DataType($this->schema,$this->columnDef);
-    }
+    abstract public function name(string $columnName):DataType;
+    abstract public function id_template():ColumnConstraint;
+    abstract public function created_at_template(bool $tz = false,int $precision = 6):ColumnConstraint;
 }

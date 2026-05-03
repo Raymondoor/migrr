@@ -1,92 +1,99 @@
 <?php namespace Raymondoor\Migrr\Schema\DataType;
-use Raymondoor\Migrr\Schema\ColumnConstraint\ColumnConstraint;
+use Raymondoor\Migrr\Schema\ColumnConstraint\PostgresColumnConstraint;
 use Raymondoor\Migrr\Schema\Schema;
-class PostgresDataType{
+class PostgresDataType extends DataType{
     public Schema $schema;
     public string $columnDef;
     public function __construct(Schema $schema, string $columnDef){
         $this->columnDef = $columnDef;
         $this->schema = $schema;
     }
+    public function __call($method, $args):PostgresColumnConstraint{
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
+    }
+    public function custom(string $rawtype):PostgresColumnConstraint{
+        $this->columnDef .=$rawtype.' ';
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
+    }
     // Numeric
-    public function int(){  
+    public function int():PostgresColumnConstraint{
         $this->columnDef .='INTEGER ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function int32(){  
+    public function int32():PostgresColumnConstraint{
         $this->columnDef .='INTEGER ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function smallint(){
+    public function smallint():PostgresColumnConstraint{
         $this->columnDef .='SMALLINT ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function int16(){
+    public function int16():PostgresColumnConstraint{
         $this->columnDef .='SMALLINT ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function bigint(){
+    public function bigint():PostgresColumnConstraint{
         $this->columnDef .='BIGINT ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function int64(){
+    public function int64():PostgresColumnConstraint{
         $this->columnDef .='BIGINT ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function decimal(int $precision = 10, int $scale = 2){
+    public function decimal(int $precision = 10, int $scale = 2):PostgresColumnConstraint{
         $this->columnDef .='DECIMAL('.$precision.','.$scale.') ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function numeric(){
-        $this->columnDef .='NUMERIC ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+    public function numeric(int $precision = 10, int $scale = 2):PostgresColumnConstraint{
+        $this->columnDef .='NUMERIC('.$precision.','.$scale.') ';
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function real(int $precision = 10, int $scale = 2){
+    public function real(int $precision = 10, int $scale = 2):PostgresColumnConstraint{
         $this->columnDef .='REAL('.$precision.','.$scale.') ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function double_precision(){
+    public function double_precision():PostgresColumnConstraint{
         $this->columnDef .='DOUBLE PRECISION ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function smallserial(){
+    public function smallserial():PostgresColumnConstraint{
         $this->columnDef .='SMALLSERIAL ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function serial(){
+    public function serial():PostgresColumnConstraint{
         $this->columnDef .='SERIAL ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function bigserial(){
+    public function bigserial():PostgresColumnConstraint{
         $this->columnDef .='BIGSERIAL ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Monetary
-    public function money(){
+    public function money():PostgresColumnConstraint{
         $this->columnDef .='MONEY ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Character
-    public function varchar(int $limit){
+    public function varchar(int $limit):PostgresColumnConstraint{
         $this->columnDef .='VARCHAR('.$limit.') ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function char(int $length){
+    public function char(int $length):PostgresColumnConstraint{
         $this->columnDef .='CHAR('.$length.') ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function bpchar(){
+    public function bpchar():PostgresColumnConstraint{
         $this->columnDef .='BPCHAR ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function text(){
+    public function text():PostgresColumnConstraint{
         $this->columnDef .='TEXT ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Binary
-    public function bytea(){
+    public function bytea():PostgresColumnConstraint{
         $this->columnDef .='BYTEA ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Rate/Time
     public function timestamp(bool $tz = false, int $precision = 6){
@@ -96,10 +103,11 @@ class PostgresDataType{
         $tzq = $tz ? 'WITH TIME ZONE ' : ' ';
         $prq = $precision===6 ? ' ' : '('.(string)$precision.') ';
         $this->columnDef .='TIMESTAMP'.$prq.$tzq;
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function date(){
+    public function date():PostgresColumnConstraint{
         $this->columnDef .= 'DATE ';
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     public function time(bool $tz = false, int $precision = 6){
         if($precision > 6 || $precision < 0){
@@ -108,7 +116,7 @@ class PostgresDataType{
         $tzq = $tz ? 'WITH TIME ZONE ' : ' ';
         $prq = $precision===6 ? ' ' : '('.(string)$precision.') ';
         $this->columnDef .='TIME'.$prq.$tzq;
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     public function interval(string $field, int $precision = 6){
         $availableFields = ['YEAR','MONTH','DAY','HOUR','MINUTE','SECOND','YEAR TO MONTH','DAY TO HOUR','DAY TO MINUTE','DAY TO SECOND','HOUR TO MINUTE','HOUR TO SECOND','MINUTE TO SECOND'];
@@ -121,63 +129,63 @@ class PostgresDataType{
         }
         $prq = $precision ===6 ? ' ' : '('.(string)$precision.') ';
         $this->columnDef .='INTERVAL '.$fieldUpper.$prq;
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Boolean
-    public function bool(){
+    public function bool():PostgresColumnConstraint{
         $this->columnDef .= 'BOOLEAN ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Enumerated
     public function enum(string $datatype){
         $this->columnDef .= $datatype.' ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Geometric
-    public function point(){
+    public function point():PostgresColumnConstraint{
         $this->columnDef .= 'POINT ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function line(){
+    public function line():PostgresColumnConstraint{
         $this->columnDef .= 'LINE ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function lseg(){
+    public function lseg():PostgresColumnConstraint{
         $this->columnDef .= 'LSEG ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function box(){
+    public function box():PostgresColumnConstraint{
         $this->columnDef .= 'BOX ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function path(){
+    public function path():PostgresColumnConstraint{
         $this->columnDef .= 'PATH ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function polygon(){
+    public function polygon():PostgresColumnConstraint{
         $this->columnDef .= 'POLYGON ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function circle(){
+    public function circle():PostgresColumnConstraint{
         $this->columnDef .= 'CIRCLE ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Network Addr
-    public function cidr(){
+    public function cidr():PostgresColumnConstraint{
         $this->columnDef .= 'CIDR ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function inet(){
+    public function inet():PostgresColumnConstraint{
         $this->columnDef .= 'INET ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function macaddr(){
+    public function macaddr():PostgresColumnConstraint{
         $this->columnDef .= 'MACADDR ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function macaddr8(){
+    public function macaddr8():PostgresColumnConstraint{
         $this->columnDef .= 'MACADDR8 ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Bit String
     public function bit(int $length,bool $varying=false){
@@ -187,15 +195,15 @@ class PostgresDataType{
         $this->columnDef .= 'BIT';
         $this->columnDef .= $varying ? ' VARYING':'';
         $this->columnDef .= '('.$length.') ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Json
-    public function json(){
+    public function json():PostgresColumnConstraint{
         $this->columnDef .= 'JSON ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function jsonb(){
+    public function jsonb():PostgresColumnConstraint{
         $this->columnDef .= 'JSONB ';
-        return new ColumnConstraint($this->schema,$this->columnDef);
+        return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
 }
