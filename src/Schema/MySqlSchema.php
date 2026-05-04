@@ -1,11 +1,12 @@
 <?php namespace Raymondoor\Migrr\Schema;
 
 class MySqlSchema extends Schema{
+    // Not implemented yet. do not use.
     public function __construct(){
         parent::__construct();
         $this->driver = 'postgres';
     }
-    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""){
+    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):MySqlSchema{
         if(empty($this->query)){
             $this->query.='CREATE ';
             if($temp){
@@ -24,7 +25,7 @@ class MySqlSchema extends Schema{
         }
         return $this;
     }
-    public function alter_table(string $table){
+    public function alter_table(string $table):MySqlSchema{
         if(empty($this->query)){
             $this->query.=$table;
         }else{
