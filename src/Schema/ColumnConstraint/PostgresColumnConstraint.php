@@ -38,6 +38,10 @@ class PostgresColumnConstraint extends ColumnConstraint{
         $this->columnDef .='PRIMARY KEY ';
         return $this;
     }
+    public function foreignKey(string $referenceTable, string $referenceColumn){
+        $this->columnDef .='REFERENCES '.$referenceTable.'('.$referenceColumn.') ';
+        return $this;
+    }
     public function identity(){
         $this->columnDef .='GENERATED ALWAYS AS IDENTITY ';
         return $this;

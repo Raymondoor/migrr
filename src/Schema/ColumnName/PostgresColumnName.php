@@ -23,6 +23,7 @@ class PostgresColumnName extends ColumnName{
     }
     public function created_at_template(bool $tz = false,int $precision = 6):PostgresColumnConstraint{
         $this->columnDef = 'created_at ';
-        return (new PostgresDataType($this->schema,$this->columnDef)->timestamp($tz,$precision)->default('CURRENT_TIMESTAMP',true));
+        return (new PostgresDataType($this->schema,$this->columnDef)->timestamp($tz,$precision)
+            ->default('CURRENT_TIMESTAMP',true));
     }
 }

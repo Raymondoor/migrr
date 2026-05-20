@@ -38,6 +38,10 @@ abstract class ColumnConstraint{
         $this->columnDef .='PRIMARY KEY ';
         return $this;
     }
+    public function foreignKey(string $referenceTable, string $referenceColumn){
+        $this->columnDef .='REFERENCES '.$referenceTable.'('.$referenceColumn.') ';
+        return $this;
+    }
     public function check(string $condition){
         $this->columnDef .='CHECK ('.$condition.') ';
         return $this;
