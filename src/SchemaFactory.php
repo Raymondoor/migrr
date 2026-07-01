@@ -1,4 +1,8 @@
-<?php namespace Raymondoor\Migrr\Schema;
+<?php namespace Raymondoor\Migrr;
+use Raymondoor\Migrr\App\Schema\Schema;
+use Raymondoor\Migrr\App\Schema\PostgresSchema;
+use Raymondoor\Migrr\App\Schema\MySqlSchema;
+use Raymondoor\Migrr\App\Schema\SqliteSchema;
 
 class SchemaFactory{
     public static function create(string $driver):Schema{

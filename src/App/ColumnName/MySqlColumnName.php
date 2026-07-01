@@ -1,18 +1,16 @@
-<?php namespace Raymondoor\Migrr\Schema\ColumnName;
-use Raymondoor\Migrr\Schema\ColumnConstraint\MySqlColumnConstraint;
-use Raymondoor\Migrr\Schema\DataType\DataType;
-use Raymondoor\Migrr\Schema\DataType\MySqlDataType;
-use Raymondoor\Migrr\Schema\Schema;
+<?php namespace Raymondoor\Migrr\App\ColumnName;
+use Raymondoor\Migrr\App\ColumnConstraint\MySqlColumnConstraint;
+use Raymondoor\Migrr\App\DataType\MySqlDataType;
+use Raymondoor\Migrr\App\Schema\Schema;
 class MySqlColumnName extends ColumnName{
     public array $unavailables = [
         'order',
     ];
-    private Schema $schema;
-    public $columnDef;
+    
     public function __construct(Schema $schema){
         $this->schema = $schema;
     }
-    public function name(string $columnName):DataType{
+    public function name(string $columnName):MySqlDataType{
         $this->columnDef .= $columnName.' ';
         return new MySqlDataType($this->schema,$this->columnDef);
     }

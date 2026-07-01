@@ -1,12 +1,12 @@
-<?php namespace Raymondoor\Migrr\Schema;
-
+<?php namespace Raymondoor\Migrr\App\Schema;
+use Raymondoor\Migrr\App\ColumnName\SqliteColumnName;
 class SqliteSchema extends Schema{
-    public function __construct(){
-        parent::__construct();
-        $this->driver = 'sqlite';
-    }
+    public function __construct(
+        public string $driver = 'sqlite',
+        public string $query = ''
+    ){}
     
-    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""){
+    public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):SqliteSchema{
         if(empty($this->query)){
             $this->query.='CREATE ';
             if($temp){
@@ -22,7 +22,7 @@ class SqliteSchema extends Schema{
         }
         return $this;
     }
-    public function alter_table(string $table){
+    public function alter_table(string $table):SqliteSchema{
         if(empty($this->query)){
             $this->query.=$table;
         }else{
@@ -30,11 +30,17 @@ class SqliteSchema extends Schema{
         }
         return $this;
     }
-    public function raw(string $sql){
+    public function raw(string $sql):SqliteSchema{
         $this->query .= $sql.' ';
+        return $this;
     }
-    public function end(){
+    public function columns():SqliteColumnName{
+        $this->query .= '(';
+        return new SqliteColumnName($this);
+    }
+    public function end():SqliteSchema{
         $this->query = trim($this->query);
         $this->query.=';';
+        return $this;
     }
 }

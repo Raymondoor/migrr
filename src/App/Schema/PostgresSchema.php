@@ -1,10 +1,10 @@
-<?php namespace Raymondoor\Migrr\Schema;
-
+<?php namespace Raymondoor\Migrr\App\Schema;
+use Raymondoor\Migrr\App\ColumnName\PostgresColumnName;
 class PostgresSchema extends Schema{
-    public function __construct(){
-        parent::__construct();
-        $this->driver = 'pgsql';
-    }
+    public function __construct(
+        public string $driver = 'pgsql',
+        public string $query = ''
+    ){}
     public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):PostgresSchema{
         if(empty($this->query)){
             $this->query.='CREATE ';
@@ -32,11 +32,17 @@ class PostgresSchema extends Schema{
         }
         return $this;
     }
-    public function raw(string $sql){
+    public function raw(string $sql):PostgresSchema{
         $this->query .= $sql;
+        return $this;
     }
-    public function end(){
+    public function columns():PostgresColumnName{
+        $this->query .= '(';
+        return new PostgresColumnName($this);
+    }
+    public function end():PostgresSchema{
         $this->query = trim($this->query);
         $this->query.=';';
+        return $this;
     }
 }

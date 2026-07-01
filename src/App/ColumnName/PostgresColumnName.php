@@ -1,24 +1,22 @@
-<?php namespace Raymondoor\Migrr\Schema\ColumnName;
-use Raymondoor\Migrr\Schema\ColumnConstraint\PostgresColumnConstraint;
-use Raymondoor\Migrr\Schema\DataType\DataType;
-use Raymondoor\Migrr\Schema\DataType\PostgresDataType;
-use Raymondoor\Migrr\Schema\Schema;
+<?php namespace Raymondoor\Migrr\App\ColumnName;
+use Raymondoor\Migrr\App\ColumnConstraint\PostgresColumnConstraint;
+use Raymondoor\Migrr\App\DataType\PostgresDataType;
+use Raymondoor\Migrr\App\Schema\Schema;
 class PostgresColumnName extends ColumnName{
     public array $unavailables = [
         'order',
     ];
-    private Schema $schema;
-    public $columnDef;
+    
     public function __construct(Schema $schema){
         $this->schema = $schema;
     }
-    public function name(string $columnName):DataType{
+    public function name(string $columnName):PostgresDataType{
         $this->columnDef .= $columnName.' ';
         return new PostgresDataType($this->schema,$this->columnDef);
     }
     public function id_template():PostgresColumnConstraint{
         $this->columnDef = 'id ';
-        return ((new PostgresDataType($this->schema,$this->columnDef))->int()
+        return ((new PostgresDataType($this->schema,$this->columnDef))->bigserial()
             ->primaryKey()->identity());
     }
     public function created_at_template(bool $tz = false,int $precision = 6):PostgresColumnConstraint{

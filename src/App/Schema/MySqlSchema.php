@@ -1,11 +1,10 @@
-<?php namespace Raymondoor\Migrr\Schema;
-
+<?php namespace Raymondoor\Migrr\App\Schema;
+use Raymondoor\Migrr\App\ColumnName\MySqlColumnName;
 class MySqlSchema extends Schema{
-    // Not implemented yet. do not use.
-    public function __construct(){
-        parent::__construct();
-        $this->driver = 'postgres';
-    }
+    public function __construct(
+        public string $driver = 'mysql',
+        public string $query = ''
+    ){}
     public function create_table(string $name, bool $ifNotExist=false, bool $temp=false, string $optionsRaw = ""):MySqlSchema{
         if(empty($this->query)){
             $this->query.='CREATE ';
@@ -33,11 +32,17 @@ class MySqlSchema extends Schema{
         }
         return $this;
     }
-    public function raw(string $sql){
+    public function raw(string $sql):MySqlSchema{
         $this->query .= $sql;
+        return $this;
     }
-    public function end(){
+    public function columns():MySqlColumnName{
+        $this->query .= '(';
+        return new MySqlColumnName($this);
+    }
+    public function end():MySqlSchema{
         $this->query = trim($this->query);
         $this->query.=';';
+        return $this;
     }
 }

@@ -1,16 +1,8 @@
-<?php namespace Raymondoor\Migrr\Schema\DataType;
-use Raymondoor\Migrr\Schema\ColumnConstraint\PostgresColumnConstraint;
-use Raymondoor\Migrr\Schema\Schema;
+<?php namespace Raymondoor\Migrr\App\DataType;
+use Raymondoor\Migrr\App\ColumnConstraint\PostgresColumnConstraint;
+use Raymondoor\Migrr\App\Schema\Schema;
 class PostgresDataType extends DataType{
-    public Schema $schema;
-    public string $columnDef;
-    public function __construct(Schema $schema, string $columnDef){
-        $this->columnDef = $columnDef;
-        $this->schema = $schema;
-    }
-    public function __call($method, $args):PostgresColumnConstraint{
-        return new PostgresColumnConstraint($this->schema,$this->columnDef);
-    }
+    public function __construct(public Schema $schema, public string $columnDef){}
     public function custom(string $rawtype):PostgresColumnConstraint{
         $this->columnDef .=$rawtype.' ';
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
@@ -96,7 +88,7 @@ class PostgresDataType extends DataType{
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Rate/Time
-    public function timestamp(bool $tz = false, int $precision = 6){
+    public function timestamp(bool $tz = false, int $precision = 6):PostgresColumnConstraint{
         if($precision > 6 || $precision < 0){
             throw new \Exception('Timestamp precision should range from 0 to 6.');
         }
@@ -109,7 +101,7 @@ class PostgresDataType extends DataType{
         $this->columnDef .= 'DATE ';
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function time(bool $tz = false, int $precision = 6){
+    public function time(bool $tz = false, int $precision = 6):PostgresColumnConstraint{
         if($precision > 6 || $precision < 0){
             throw new \Exception('Time precision should range from 0 to 6.');
         }
@@ -118,7 +110,7 @@ class PostgresDataType extends DataType{
         $this->columnDef .='TIME'.$prq.$tzq;
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
-    public function interval(string $field, int $precision = 6){
+    public function interval(string $field, int $precision = 6):PostgresColumnConstraint{
         $availableFields = ['YEAR','MONTH','DAY','HOUR','MINUTE','SECOND','YEAR TO MONTH','DAY TO HOUR','DAY TO MINUTE','DAY TO SECOND','HOUR TO MINUTE','HOUR TO SECOND','MINUTE TO SECOND'];
         if($precision > 6 || $precision < 0){
             throw new \Exception('Interval precision should range from 0 to 6.');
@@ -137,7 +129,7 @@ class PostgresDataType extends DataType{
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Enumerated
-    public function enum(string $datatype){
+    public function enum(string $datatype):PostgresColumnConstraint{
         $this->columnDef .= $datatype.' ';
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
@@ -188,7 +180,7 @@ class PostgresDataType extends DataType{
         return new PostgresColumnConstraint($this->schema,$this->columnDef);
     }
     // Bit String
-    public function bit(int $length,bool $varying=false){
+    public function bit(int $length,bool $varying=false):PostgresColumnConstraint{
         if($length < 0){
             throw new \InvalidArgumentException('Length cannot be a negative number.');
         }

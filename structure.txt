@@ -1,0 +1,12 @@
+src/
+    App/
+        ColumnConstraint/
+        ColumnName/
+        DataType/
+        Schema/
+    Base/
+        ColumnConstraint.php
+        ColumnName.php
+        DataType.php
+        Schema.php
+    SchemaFactory.php
