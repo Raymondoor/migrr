@@ -37,7 +37,7 @@ class PostgresSchema extends Schema{
         return $this;
     }
     public function columns():PostgresColumnName{
-        $this->query .= '(';
+        $this->query .= "(\n";
         return new PostgresColumnName($this);
     }
     public function end():PostgresSchema{

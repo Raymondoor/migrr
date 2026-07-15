@@ -11,13 +11,12 @@ class PostgresColumnName extends ColumnName{
         $this->schema = $schema;
     }
     public function name(string $columnName):PostgresDataType{
-        $this->columnDef .= $columnName.' ';
+        $this->columnDef .= "\n  ".$columnName.' ';
         return new PostgresDataType($this->schema,$this->columnDef);
     }
     public function id_template():PostgresColumnConstraint{
-        $this->columnDef = 'id ';
-        return ((new PostgresDataType($this->schema,$this->columnDef))->bigserial()
-            ->primaryKey()->identity());
+        return $this->name('id')->bigserial()
+            ->primaryKey()->identity();
     }
     public function created_at_template(bool $tz = false,int $precision = 6):PostgresColumnConstraint{
         $this->columnDef = 'created_at ';

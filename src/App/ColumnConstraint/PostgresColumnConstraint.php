@@ -23,7 +23,7 @@ class PostgresColumnConstraint extends ColumnConstraint{
     }
     public function endColumns():PostgresSchema{
         $this->schema->query .= trim($this->columnDef);
-        $this->schema->query .= ') ';
+        $this->schema->query .= "\n)";
         return $this->schema instanceof PostgresSchema ? $this->schema : throw new \RuntimeException('Invalid schema type');
     }
     public function unique():PostgresColumnConstraint{
@@ -61,6 +61,14 @@ class PostgresColumnConstraint extends ColumnConstraint{
     }
     public function autoincrement():PostgresColumnConstraint{
         $this->columnDef .='AUTOINCREMENT ';
+        return $this;
+    }
+    public function references(string $referenceTable, string $referenceColumn):PostgresColumnConstraint{
+        $this->columnDef .='REFERENCES '.$referenceTable.'('.$referenceColumn.') ';
+        return $this;
+    }
+    public function onDeleteCascade():PostgresColumnConstraint{
+        $this->columnDef .='ON DELETE CASCADE ';
         return $this;
     }
 }
